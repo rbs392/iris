@@ -1,0 +1,2 @@
+GET /search controllers.Iris.search(url)
+GET /add    controllers.Iris.add(url)
