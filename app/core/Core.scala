@@ -5,9 +5,11 @@ package core
   */
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper
+import play.api.GlobalSettings
+import play.api.libs.json.{JsLookupResult, JsObject, JsValue, Json}
 import sun.misc.BASE64Encoder
 
-import scalaj.http.Http
+import scalaj.http.{Http, HttpConstants}
 
 object Main {
   val mapper = new ObjectMapper()
@@ -56,7 +58,7 @@ object Main {
 
   def add(url: String) = {
     val data = getImgFromUrl(url)
-    val result = Http("http://build.indix.tv:4920/test").postData(s"""{"my_img": "$data"}""").asString
+    val result = Http("http://build.indix.tv:4920/test/test").postData(s"""{"my_img": "$data"}""").asString
     (result.code, result.body)
   }
 
@@ -79,6 +81,12 @@ object Main {
          |}
       """.stripMargin
     val result = Http("http://build.indix.tv:4920/test/_search").postData(query).asString
-    (result.code, result.body)
+    val body = Json.parse(result.body)
+    val hits = body\"hits"\"hits"
+    val images = (hits.get(0)\"_source"\"my_img").as[JsValue].toString()
+    (result.code, "<img src='data:image/base64;" + images + "' />")
   }
 }
+
+case class hit(_index: String, _type: String, _id: String, _score: String, _source: _source)
+case class _source(my_image: String)
