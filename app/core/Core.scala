@@ -86,13 +86,13 @@ object Main {
 
     val images = hits.as[List[JsValue]].map(x => {
       val json = x.asInstanceOf[JsValue]
-      val score = (json\"_score").toString
-      val id = (json\"id").toString
+      val score = (json\"_score").as[JsValue].toString
+      val id = (json\"_id").as[JsValue].toString
       val img = (json\"_source"\"my_img").as[JsValue].toString().replaceAll("\"", "")
       s"""
          |<p>
-         |  <h4>$id</h4>
-         |  <h6>$score</h6>
+         |  <h4>id: $id</h4>
+         |  <h4>score: $score</h4>
          |  <img src=\"data:image/jpeg;base64,$img"/>
          | </p>""".stripMargin
     })

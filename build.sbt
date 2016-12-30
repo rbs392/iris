@@ -1,4 +1,4 @@
-name := "ml"
+name := "Iris"
 
 version := "1.0"
 
