@@ -83,8 +83,20 @@ object Main {
     val result = Http("http://build.indix.tv:4920/test/_search").postData(query).asString
     val body = Json.parse(result.body)
     val hits = body\"hits"\"hits"
-    val images = (hits.get(0)\"_source"\"my_img").as[JsValue].toString()
-    (result.code, "<img src='data:image/base64;" + images + "' />")
+
+    val images = hits.as[List[JsValue]].map(x => {
+      val json = x.asInstanceOf[JsValue]
+      val score = (json\"_score").toString
+      val id = (json\"id").toString
+      val img = (json\"_source"\"my_img").as[JsValue].toString().replaceAll("\"", "")
+      s"""
+         |<p>
+         |  <h4>$id</h4>
+         |  <h6>$score</h6>
+         |  <img src=\"data:image/jpeg;base64,$img"/>
+         | </p>""".stripMargin
+    })
+    (result.code, images.foldLeft("")((a, c) => a+"\n"+c))
   }
 }
 
