@@ -55,7 +55,6 @@ class IrisCoreSpec extends IrisSpec {
         Mockito.when(helper.getImgFromUrl(url)).thenReturn("image_data")
         Mockito.when(utils.generateQuery("image_data")).thenReturn("query_data")
         Mockito.when(client.search(Matchers.anyString(), Matchers.anyString())).thenReturn((200, "success"))
-        val c = irisCore.search(url)
         assert(irisCore.search(url) === (200, "success"))
       }
       it("should return 500 on failure ") {
@@ -63,6 +62,20 @@ class IrisCoreSpec extends IrisSpec {
         Mockito.when(utils.generateQuery("image_data")).thenReturn("query_data")
         Mockito.when(client.search(Matchers.anyString(), Matchers.anyString())).thenReturn((500, "failure"))
         assert(irisCore.search(url) === (500, "failure"))
+      }
+    }
+
+    describe("search raw data") {
+      it("should search data and return success") {
+        Mockito.when(utils.generateQuery("image_data")).thenReturn("query_data")
+        Mockito.when(client.search(Matchers.anyString(), Matchers.anyString())).thenReturn((200, "success"))
+        assert(irisCore.searchRaw(url) === (200, "success"))
+      }
+      it("should return 500 on failure ") {
+        Mockito.when(helper.getImgFromUrl(url)).thenReturn("image_data")
+        Mockito.when(utils.generateQuery("image_data")).thenReturn("query_data")
+        Mockito.when(client.search(Matchers.anyString(), Matchers.anyString())).thenReturn((500, "failure"))
+        assert(irisCore.searchRaw("testbase") === (500, "failure"))
       }
     }
   }
