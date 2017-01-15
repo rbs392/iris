@@ -1,4 +1,5 @@
 GET     /search         controllers.Iris.search(url)
+POST    /search         controllers.Iris.searchRaw()
 GET     /add            controllers.Iris.add(url, metadata)
 GET     /create/index   controllers.Iris.addIndex(name)
 GET     /health         controllers.Iris.health

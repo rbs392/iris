@@ -37,4 +37,22 @@ class IrisUtils {
     })
     images.foldLeft("")((a, c) => a+"\n"+c)
   }
+
+  def formatOutputJSON(rawJson: String) = {
+    val body = Json.parse(rawJson)
+    val hits = body\"hits"\"hits"
+    val output = hits.as[List[JsValue]].map(x => {
+      val id = (x\"_id").as[JsValue].toString
+      val score = (x\"_score").as[JsValue].toString
+      val metadata = (x\"_source").as[JsValue].toString
+      s"""
+         |{
+         |  "id": $id,
+         |  "metadata": $metadata,
+         |  "score": $score
+         |}
+       """.stripMargin
+    })
+    s"""[${output.mkString(",")}]"""
+  }
 }

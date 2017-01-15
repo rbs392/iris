@@ -2,7 +2,8 @@ package clients
 
 import core.IrisSpec
 import models.IrisModel
-import org.mockito.Mockito
+import org.mockito.{Matchers, Mockito}
+
 import scalaj.http._
 
 class ElasticSearchClientSpec extends IrisSpec {
@@ -20,22 +21,23 @@ class ElasticSearchClientSpec extends IrisSpec {
   def setResponse(res: HttpResponse[String]) = {
   }
   def setUpMocks(res: HttpResponse[String], postData: String, onHttp: String) = {
+    Mockito.when(mockReq.put(Matchers.anyString())).thenReturn(mockReq)
     Mockito.when(mockReq.asString).thenReturn(res)
-    Mockito.when(mockReq.postData(postData)).thenReturn(mockReq)
     Mockito.when(mockHttp.apply(onHttp)).thenReturn(mockReq)
   }
 
   def setUpMocks(res: HttpResponse[String], postData: IrisModel, data: String, onHttp: String) = {
     Mockito.when(mockReq.asString).thenReturn(res)
     Mockito.when(mockData.toString).thenReturn(data)
-    Mockito.when(mockReq.postData(data)).thenReturn(mockReq)
-    Mockito.when(mockHttp.apply(onHttp)).thenReturn(mockReq)
+    Mockito.when(mockReq.postData(Matchers.anyString)).thenReturn(mockReq)
+    Mockito.when(mockHttp.apply(Matchers.anyString())).thenReturn(mockReq)
   }
 
   describe("Elastic search client") {
     describe("create maping") {
       it("should return 200 on successful creation") {
         setUpMocks(successRes, schema, baseurl+index)
+        client.createMapping(index, schema)
         assert(client.createMapping(index, schema) === (200, resBody))
       }
 
@@ -48,6 +50,7 @@ class ElasticSearchClientSpec extends IrisSpec {
     describe("add image") {
       it("should return 200 on success of add image") {
         setUpMocks(successRes, mockData, "data", baseurl+index)
+        client.add(index, mockData)
         assert(client.add(index, mockData) === (200, resBody))
       }
 

@@ -18,7 +18,11 @@ class IrisCore(index: String, client: ElasticSearchClient, helper: IrisHelperCli
 
   def search(url: String) = {
     val rawImage = helper.getImgFromUrl(url)
-    val query = utils.generateQuery(rawImage)
+    searchRaw(rawImage)
+  }
+
+  def searchRaw(base64Image: String) = {
+    val query = utils.generateQuery(base64Image)
     client.search(index, query)
   }
 

@@ -15,7 +15,6 @@ class ElasticSearchClient(BASEURL: String, http: BaseHttp) {
 
   def add(index: String, data: IrisModel) = {
     val url = BASEURL+index+"/iris/"
-    println(url)
     val result = http(url).postData(data.toString).asString
     (result.code, result.body)
   }
