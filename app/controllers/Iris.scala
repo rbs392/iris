@@ -21,8 +21,14 @@ class Iris extends Controller{
   iris.createMaping()
 
   def search(url: String) = Action {
-    Ok(utils.formatImage(iris.search(url)._2)).as(HTML)
+    Ok(utils.formatOutputJSON(iris.search(url)._2)).as(JSON)
   }
+
+  def searchRaw = Action { request =>
+    val data = request.body.asText.getOrElse("")
+    Ok(utils.formatOutputJSON(iris.searchRaw(data)._2)).as(JSON)
+  }
+
   def add(url: String, metadata: String) = Action {
     Ok(iris.add(url, metadata)._2)
   }
